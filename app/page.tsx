@@ -13,6 +13,19 @@ function makeNoise(ctx:AudioContext,type:NoiseName){
   return buffer;
 }
 
+const questionSets={body:[{q:"Which color feels good right now?",options:["Blue","Yellow","Green","Pink","Black"]},{q:"What temperature feels best?",options:["Cool","Warm","In between"]},{q:"What feels most supportive?",options:["Softness","Pressure","Space"]}],senses:[{q:"What can you notice right now?",options:["My feet","My hands","My breath"]},{q:"Which sound would feel kind?",options:["Quiet","Music","Nature"]},{q:"What would help most?",options:["Dim light","A blanket","Fresh air"]}]};
+
+function GroundingPage({variant}:{variant:keyof typeof questionSets}){
+  const [answers,setAnswers]=useState<Record<number,string>>({});
+  return <section className={`question-page question-${variant}`}><p className="kicker">a small check in</p><div className="question-list">{questionSets[variant].map((item,i)=><article key={item.q} className={answers[i]?"answered":""}><span>0{i+1}</span><h3>{item.q}</h3><div className="answer-row">{item.options.map(option=><button key={option} className={answers[i]===option?"selected":""} onClick={()=>setAnswers(a=>({...a,[i]:option}))}>{option}<i/></button>)}</div></article>)}</div><div className="answer-bloom" key={Object.values(answers).join()} aria-hidden="true"/></section>
+}
+
+function PuzzlePage(){
+  const [progress,setProgress]=useState(0),order=[1,2,3,4,5,6];
+  function choose(n:number){if(progress===order.length){setProgress(0);return}if(n===order[progress])setProgress(p=>p+1)}
+  return <section className={`puzzle-page ${progress===order.length?"complete":""}`}><p className="kicker">tap in order</p><h2>A tiny pattern.</h2><div className="puzzle-board">{order.map((n,i)=><button key={n} className={i<progress?"done":""} onClick={()=>choose(n)} aria-label={`Step ${n}`}><span>{n}</span><i/></button>)}<div className="puzzle-glow"/></div><p className="puzzle-status">{progress===order.length?"complete · tap once to begin again":`${progress} of ${order.length}`}</p></section>
+}
+
 export default function Home(){
   const [shape,setShape]=useState(0),[palette,setPalette]=useState(0),[note,setNote]=useState(0),[noise,setNoise]=useState<NoiseName>("pink"),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(28),[dvdBurst,setDvdBurst]=useState(0),[dvdPalette,setDvdPalette]=useState(0),[dvdNote,setDvdNote]=useState(1),[constellationReverse,setConstellationReverse]=useState(false),[constellationPalette,setConstellationPalette]=useState(0),[constellationNote,setConstellationNote]=useState(2);
   const engine=useRef<{ctx:AudioContext;gain:GainNode}|null>(null);
@@ -34,6 +47,7 @@ export default function Home(){
         <p className="orb-note" key={note}>{notes[note]}</p>
       </div>
     </section>
+    <GroundingPage variant="body"/>
     <section className="sound-section">
       <div><h2>Binaural beats for focus.<br/><em>Pink noise for rest.</em></h2></div>
       <div className="sound-player">
@@ -44,8 +58,10 @@ export default function Home(){
       </div>
     </section>
     <section className={`dvd-world ${palettes[dvdPalette]} hit-${dvdBurst%2}`} aria-label="Bouncing pink orb sensory animation"><button className="dvd-stage" onClick={bounceReaction} aria-label="React to the bouncing orb, change its color, and show a new affirmation"><span className="dvd-x"><span className="dvd-y"><span className="dvd-local-ring dlr-one"><i/></span><span className="dvd-local-ring dlr-two"><i/></span><span className="dvd-local-ring dlr-three"/><span className="dvd-orb"><i/><b/></span></span></span><span className="impact" key={`impact-${dvdBurst}`}>{Array.from({length:12},(_,i)=><i key={i} style={{"--p":i} as React.CSSProperties}/>)}</span><span className="screen-ring sr-one"/><span className="screen-ring sr-two"/></button><p className="sensory-note dvd-note" key={dvdNote}>{notes[dvdNote]}</p></section>
+    <PuzzlePage/>
     <section className="ritual" id="ritual"><h2>Feeling overstimulated?<br/><em>Try two inhales in, one long breath out</em></h2><div className="steps"><article><b>01</b><h3>Inhale</h3><p>Take a deep breath in through your nose.</p></article><article><b>02</b><h3>Top It Off</h3><p>Take a quick, second sip of air at the top.</p></article><article><b>03</b><h3>Release</h3><p>Let out a long, slow sigh through your mouth.</p></article></div></section>
     <section className={`constellation-world ${constellationReverse?"reverse":""} ${palettes[constellationPalette]}`} aria-label="Floating pink orb constellation sensory animation"><button className="constellation-field" onClick={reverseConstellation} aria-label={`Reverse the constellation, change its color, and show a new affirmation. Currently moving ${constellationReverse?"counterclockwise":"clockwise"}`}><div className="constellation-core"/>{Array.from({length:14},(_,i)=><span className="constellation-orb" key={i} style={{"--c":i} as React.CSSProperties}><i/></span>)}<div className="constellation-path cp-one"/><div className="constellation-path cp-two"/><div className="constellation-path cp-three"/></button><p className="sensory-note constellation-note" key={constellationNote}>{notes[constellationNote]}</p></section>
+    <GroundingPage variant="senses"/>
     <section className="quote-sky" aria-label="Gentle reminders"><div className="wind-lines" aria-hidden="true"/><div className="quote-ring qr-one"><i/></div><div className="quote-ring qr-two"><i/></div><div className="quote-ring qr-three"/>{Array.from({length:9},(_,i)=><span className="tiny-orb" key={i} style={{"--o":i} as React.CSSProperties}/>) }<p className="kicker">let the words pass through</p>{quotes.map((quote,i)=><blockquote key={quote} style={{"--q":i} as React.CSSProperties}>{quote}</blockquote>)}</section>
     <footer><a className="wordmark" href="#top"><i/>soft space</a><p>made gently, for gentle moments</p><a href="#top">back to top ↑</a></footer>
   </main>
