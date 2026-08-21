@@ -13,7 +13,7 @@ function makeNoise(ctx:AudioContext,type:NoiseName){
   return buffer;
 }
 
-const questionSets={body:[{q:"Which color feels good right now?",options:["Pastel blue","Pastel yellow","Pastel green","Pastel pink","Pastel lilac"]},{q:"What temperature feels best?",options:["Cool","Warm","In between"]},{q:"What feels most supportive?",options:["Softness","Pressure","Space"]}],closing:[{q:"How does your body feel now?",options:["Softer","The same","Not sure"]},{q:"What do you need next?",options:["Quiet","Movement","Comfort"]},{q:"What can wait for later?",options:["A task","A reply","A decision"]}]};
+const questionSets={body:[{q:"Which color feels good right now?",options:["Pastel blue","Pastel yellow","Pastel green","Pastel pink","Pastel lilac"]},{q:"What temperature feels best?",options:["Cool","Warm","In between"]},{q:"What feels most supportive?",options:["Softness","Pressure","Space"]}],closing:[{q:"What is your favorite hydration drink?",options:["Water","Gatorade","Coconut Water"]},{q:"What is your go-to caffeine drink?",options:["Black Coffee","Red Bull","Iced Latte"]},{q:'What is your favorite "silly" / treat drink?',options:["Orange Juice","Diet Coke","Hot Chocolate"]}]};
 
 function GroundingPage({variant}:{variant:keyof typeof questionSets}){
   const [answers,setAnswers]=useState<Record<number,string>>({});
