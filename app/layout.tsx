@@ -13,8 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Soft Space — a pink sensory pause",
-  description: "A gentle, interactive breathing space made for quiet moments.",
+  metadataBase: new URL("https://soft-space-pink-sensory.ritika-rk200.chatgpt.site"),
+  title: "Soft Space — a sensory place to soften",
+  description: "Touch shape-shifting pink forms, choose a calming noise, and take one gentle breath.",
+  openGraph: {
+    title: "Soft Space — a sensory place to soften",
+    description: "Touch, listen, breathe. A little corner of the internet made for your senses.",
+    images: ["/og.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Soft Space — a sensory place to soften",
+    description: "Touch, listen, breathe. A little corner of the internet made for your senses.",
+    images: ["/og.png"],
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
