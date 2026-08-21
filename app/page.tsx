@@ -29,7 +29,7 @@ export default function Home(){
       <div className={`orb-stage ${palettes[palette]}`}>
         <div className="orbital ring-one"><i/></div><div className="orbital ring-two"><i/></div><div className="orbital ring-three"/>
         <button className={`quality-orb shape-${shape}`} onClick={touchOrb} aria-label="Change the sensory orb's shape and color"><span className="orb-depth"/><span className="orb-shine"/></button>
-        <p className="orb-note" key={note}>{notes[note]}</p><p className="tap-hint">tap the orb · let it become something new</p>
+        <p className="orb-note" key={note}>{notes[note]}</p>
       </div>
     </section>
     <section className="sound-section">
@@ -41,8 +41,8 @@ export default function Home(){
         <div className="volume"><span>quiet</span><input aria-label="Volume" type="range" min="5" max="70" value={volume} onChange={e=>setVolume(Number(e.target.value))}/><span>full</span></div>
       </div>
     </section>
-    <section className="ritual" id="ritual"><h2>Feeling overstimulated?<br/><em>Try two inhales in, one long breath out—</em></h2><div className="steps"><article><b>01</b><h3>Inhale</h3><p>Take a deep breath in through your nose.</p></article><article><b>02</b><h3>Top It Off</h3><p>Take a quick, second sip of air at the top.</p></article><article><b>03</b><h3>Release</h3><p>Let out a long, slow sigh through your mouth.</p></article></div></section>
-    <section className="quote-sky" aria-label="Gentle reminders"><div className="wind-lines" aria-hidden="true"/><p className="kicker">let the words pass through</p>{quotes.map((quote,i)=><blockquote key={quote} style={{"--q":i} as React.CSSProperties}>{quote}</blockquote>)}</section>
+    <section className="ritual" id="ritual"><h2>Feeling overstimulated?<br/><em>Try two inhales in, one long breath out</em></h2><div className="steps"><article><b>01</b><h3>Inhale</h3><p>Take a deep breath in through your nose.</p></article><article><b>02</b><h3>Top It Off</h3><p>Take a quick, second sip of air at the top.</p></article><article><b>03</b><h3>Release</h3><p>Let out a long, slow sigh through your mouth.</p></article></div></section>
+    <section className="quote-sky" aria-label="Gentle reminders"><div className="wind-lines" aria-hidden="true"/><div className="quote-ring qr-one"><i/></div><div className="quote-ring qr-two"><i/></div><div className="quote-ring qr-three"/>{Array.from({length:9},(_,i)=><span className="tiny-orb" key={i} style={{"--o":i} as React.CSSProperties}/>) }<p className="kicker">let the words pass through</p>{quotes.map((quote,i)=><blockquote key={quote} style={{"--q":i} as React.CSSProperties}>{quote}</blockquote>)}</section>
     <footer><a className="wordmark" href="#top"><i/>soft space</a><p>made gently, for gentle moments</p><a href="#top">back to top ↑</a></footer>
   </main>
 }
