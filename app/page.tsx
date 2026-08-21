@@ -13,11 +13,11 @@ function makeNoise(ctx:AudioContext,type:NoiseName){
   return buffer;
 }
 
-const questionSets={body:[{q:"Which color feels good right now?",options:["Pastel blue","Pastel yellow","Pastel green","Pastel pink","Pastel lilac"]},{q:"What temperature feels best?",options:["Cool","Warm","In between"]},{q:"What feels most supportive?",options:["Softness","Pressure","Space"]}]};
+const questionSets={body:[{q:"Which color feels good right now?",options:["Pastel blue","Pastel yellow","Pastel green","Pastel pink","Pastel lilac"]},{q:"What temperature feels best?",options:["Cool","Warm","In between"]},{q:"What feels most supportive?",options:["Softness","Pressure","Space"]}],closing:[{q:"How does your body feel now?",options:["Softer","The same","Not sure"]},{q:"What do you need next?",options:["Quiet","Movement","Comfort"]},{q:"What can wait for later?",options:["A task","A reply","A decision"]}]};
 
 function GroundingPage({variant}:{variant:keyof typeof questionSets}){
   const [answers,setAnswers]=useState<Record<number,string>>({});
-  return <section className={`question-page question-${variant}`}><p className="kicker">a small check in</p><div className="question-list">{questionSets[variant].map((item,i)=><article key={item.q} className={answers[i]?"answered":""}><span>0{i+1}</span><h3>{item.q}</h3><div className={`answer-row ${i===0?"pastel-row":""}`}>{item.options.map(option=><button key={option} aria-label={option} className={answers[i]===option?"selected":""} onClick={()=>setAnswers(a=>({...a,[i]:option}))}><span>{i===0?"":option}</span></button>)}</div></article>)}</div>{Object.keys(answers).length>0&&<div className="answer-bloom" key={Object.values(answers).join()} aria-hidden="true"/>}</section>
+  return <section className={`question-page question-${variant}`}><p className="kicker">{variant==="closing"?"before you go":"a small check in"}</p><div className="question-list">{questionSets[variant].map((item,i)=><article key={item.q} className={answers[i]?"answered":""}><span>0{i+1}</span><h3>{item.q}</h3><div className={`answer-row ${variant==="body"&&i===0?"pastel-row":""}`}>{item.options.map(option=><button key={option} aria-label={option} className={answers[i]===option?"selected":""} onClick={()=>setAnswers(a=>({...a,[i]:option}))}><span>{variant==="body"&&i===0?"":option}</span></button>)}</div></article>)}</div>{Object.keys(answers).length>0&&<div className="answer-bloom" key={Object.values(answers).join()} aria-hidden="true"/>}</section>
 }
 
 function PuzzlePage(){
@@ -30,6 +30,12 @@ function BloomPuzzle(){
   const [petals,setPetals]=useState<number[]>([]),total=8;
   function touch(i:number){setPetals(p=>p.length===total?[i]:p.includes(i)?p:[...p,i])}
   return <section className={`bloom-puzzle ${petals.length===total?"complete":""}`}><p className="kicker">wake each petal</p><h2>Make it bloom.</h2><div className="bloom-board"><div className="bloom-center"/>{Array.from({length:total},(_,i)=><button key={i} className={petals.includes(i)?"awake":""} style={{"--b":i} as React.CSSProperties} onClick={()=>touch(i)} aria-label={`Petal ${i+1}`}><i/></button>)}</div><p className="puzzle-status">{petals.length===total?"full bloom · tap a petal to begin again":`${petals.length} of ${total}`}</p></section>
+}
+
+function BubblePuzzle(){
+  const [progress,setProgress]=useState(0),total=7;
+  function touch(i:number){if(progress===total){setProgress(i===0?1:0);return}if(i===progress)setProgress(p=>p+1)}
+  return <section className={`bubble-puzzle ${progress===total?"complete":""}`}><p className="kicker">small to big</p><h2>Let each bubble glow.</h2><div className="bubble-board">{Array.from({length:total},(_,i)=><button key={i} className={i<progress?"lit":""} style={{"--bubble":i} as React.CSSProperties} onClick={()=>touch(i)} aria-label={`Bubble ${i+1} of ${total}`}/>) }<div className="bubble-halo"/></div><p className="puzzle-status">{progress===total?"all glowing · tap the smallest to begin again":`${progress} of ${total}`}</p></section>
 }
 
 export default function Home(){
@@ -69,6 +75,9 @@ export default function Home(){
     <section className={`dvd-world ${palettes[dvdPalette]} hit-${dvdBurst%2}`} aria-label="Bouncing pink orb sensory animation"><button className="dvd-stage" onClick={bounceReaction} aria-label="React to the bouncing orb, change its color, and show a new affirmation"><span className="dvd-x"><span className="dvd-y"><span className="dvd-local-ring dlr-one"><i/></span><span className="dvd-local-ring dlr-two"><i/></span><span className="dvd-local-ring dlr-three"/><span className="dvd-orb"><i/><b/></span></span></span><span className="impact" key={`impact-${dvdBurst}`}>{Array.from({length:12},(_,i)=><i key={i} style={{"--p":i} as React.CSSProperties}/>)}</span><span className="screen-ring sr-one"/><span className="screen-ring sr-two"/></button><p className="sensory-note dvd-note" key={dvdNote}>{notes[dvdNote]}</p></section>
     <BloomPuzzle/>
     <section className="quote-sky" aria-label="Gentle reminders"><div className="wind-lines" aria-hidden="true"/><div className="quote-ring qr-one"><i/></div><div className="quote-ring qr-two"><i/></div><div className="quote-ring qr-three"/>{Array.from({length:9},(_,i)=><span className="tiny-orb" key={i} style={{"--o":i} as React.CSSProperties}/>) }<p className="kicker">let the words pass through</p>{quotes.map((quote,i)=><blockquote key={quote} style={{"--q":i} as React.CSSProperties}>{quote}</blockquote>)}</section>
+    <GroundingPage variant="closing"/>
+    <BubblePuzzle/>
+    <section className="conclusion" aria-label="A gentle conclusion"><div className="conclusion-rings" aria-hidden="true"><i/><i/><b/><b/></div><p className="kicker">a soft ending</p><h2>You made a little space.<br/><em>That is enough for now.</em></h2><p>Take what helped. Leave the rest.</p><a href="#top">begin again <span>↑</span></a></section>
     <footer><a className="wordmark" href="#top"><i/>soft space</a><p>made gently, for gentle moments</p><a href="#top">back to top ↑</a></footer>
   </main>
 }
