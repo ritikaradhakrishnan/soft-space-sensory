@@ -13,29 +13,27 @@ function makeNoise(ctx:AudioContext,type:NoiseName){
 }
 
 export default function Home(){
-  const [splits,setSplits]=useState(1),[palette,setPalette]=useState(0),[note,setNote]=useState(0),[noise,setNoise]=useState<NoiseName>("pink"),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(28);
+  const [shape,setShape]=useState(0),[palette,setPalette]=useState(0),[note,setNote]=useState(0),[noise,setNoise]=useState<NoiseName>("pink"),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(28);
   const engine=useRef<{ctx:AudioContext;source:AudioBufferSourceNode;gain:GainNode}|null>(null);
   useEffect(()=>()=>{engine.current?.ctx.close()},[]);
   useEffect(()=>{if(engine.current)engine.current.gain.gain.setTargetAtTime(volume/500,engine.current.ctx.currentTime,.08)},[volume]);
   function stop(){engine.current?.ctx.close();engine.current=null;setPlaying(false)}
   function play(kind=noise){stop();const ctx=new AudioContext(),source=ctx.createBufferSource(),gain=ctx.createGain();source.buffer=makeNoise(ctx,kind);source.loop=true;gain.gain.value=volume/500;source.connect(gain).connect(ctx.destination);source.start();engine.current={ctx,source,gain};setPlaying(true)}
   function changeNoise(kind:NoiseName){setNoise(kind);if(playing)play(kind)}
-  function touchOrb(){setSplits(s=>s>=7?1:s+1);setPalette(p=>(p+1)%palettes.length);setNote(n=>(n+1)%notes.length)}
+  function touchOrb(){setShape(s=>(s+1)%5);setPalette(p=>(p+1)%palettes.length);setNote(n=>(n+1)%notes.length)}
   return <main>
     <nav><a className="wordmark" href="#top"><i/>soft space</a><div><a href="#studio">sensory studio</a><a href="#ritual">tiny ritual</a></div></nav>
-    <section className="hero" id="top"><p className="kicker">an interactive place to soften</p><h1>A little corner of the internet<br/><em>made for your senses.</em></h1><p className="intro">Click, listen, breathe. There is no score to reach and nowhere else you need to be.</p><a className="start" href="#studio">enter soft space <span>↓</span></a></section>
+    <section className="hero" id="top"><div className="hero-orbits" aria-hidden="true"><i/><i/><b/><b/></div><p className="kicker">an interactive place to soften</p><h1>A little corner of the internet<br/><em>made for your senses.</em></h1><p className="intro">Click, listen, breathe. There is no score to reach and nowhere else you need to be.</p><a className="start" href="#studio">enter soft space <span>↓</span></a></section>
     <section className="studio" id="studio">
-      <div className="studio-copy"><p className="kicker">01 · touch</p><h2>Let the feeling multiply.</h2><p>Each touch splits the form into something new. Watch the colors wander through shades of pink, then begin again.</p><div className="count"><strong>0{splits}</strong><span>soft forms<br/>in your space</span></div></div>
+      <div className="studio-copy"><p className="kicker">01 · touch</p><h2>Follow the shape as it softens.</h2><div className="count"><strong>0{shape+1}</strong><span>shape state<br/>in this moment</span></div></div>
       <div className={`orb-stage ${palettes[palette]}`}>
-        <div className="halo"/>
-        <button className="orb-family" onClick={touchOrb} aria-label={`Split the sensory shape. Currently ${splits} forms`}>
-          {Array.from({length:splits},(_,i)=><span className="orb-piece" key={i} style={{"--i":i,"--n":splits} as React.CSSProperties}><i/></span>)}
-        </button>
-        <p className="orb-note" key={note}>{notes[note]}</p><p className="tap-hint">tap the shapes · {splits===7?"one more to reset":"watch them split"}</p>
+        <div className="orbital ring-one"><i/></div><div className="orbital ring-two"><i/></div><div className="orbital ring-three"/>
+        <button className={`quality-orb shape-${shape}`} onClick={touchOrb} aria-label="Change the sensory orb's shape and color"><span className="orb-depth"/><span className="orb-shine"/></button>
+        <p className="orb-note" key={note}>{notes[note]}</p><p className="tap-hint">tap the orb · let it become something new</p>
       </div>
     </section>
     <section className="sound-section">
-      <div><p className="kicker">02 · listen</p><h2>Choose your hush.</h2><p className="section-text">A soft layer of sound can give a busy mind somewhere gentle to land.</p></div>
+      <div><p className="kicker">02 · listen</p><h2>Choose your hush.</h2></div>
       <div className="sound-player">
         <label htmlFor="sound">soundscape</label><select id="sound" value={noise} onChange={e=>changeNoise(e.target.value as NoiseName)}>{Object.entries(noiseLabels).map(([value,label])=><option value={value} key={value}>{label}</option>)}</select>
         <button className="play" onClick={()=>playing?stop():play()}><span>{playing?"Ⅱ":"▶"}</span>{playing?"pause sound":"play sound"}</button>

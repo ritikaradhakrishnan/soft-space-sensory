@@ -27,4 +27,4 @@ npm run build
 
 ## Live site
 
-[soft-space-pink-sensory.ritika-rk200.chatgpt.site](https://soft-space-pink-sensory.ritika-rk200.chatgpt.site)
+[ritikaradhakrishnan.github.io/soft-space-sensory](https://ritikaradhakrishnan.github.io/soft-space-sensory/)
