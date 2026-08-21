@@ -23,7 +23,7 @@ export default function Home(){
   function touchOrb(){setShape(s=>(s+1)%5);setPalette(p=>(p+1)%palettes.length);setNote(n=>(n+1)%notes.length)}
   return <main>
     <nav><a className="wordmark" href="#top"><i/>soft space</a><div><a href="#studio">sensory studio</a><a href="#ritual">tiny ritual</a></div></nav>
-    <section className="hero" id="top"><div className="hero-orbits" aria-hidden="true"><i/><i/><b/><b/></div><p className="kicker">an interactive place to soften</p><h1>A little corner of the internet<br/><em>made for your senses.</em></h1><p className="intro">Click, listen, breathe. There is no score to reach and nowhere else you need to be.</p><a className="start" href="#studio">enter soft space <span>↓</span></a></section>
+    <section className="hero" id="top"><div className="hero-orbits" aria-hidden="true"><i/><i/><b/><b/></div><p className="kicker">an interactive place to soften</p><h1>A little corner of the internet<br/><em>made for AuDHD brains.</em></h1><p className="intro">Click, listen, breathe. There is no score to reach and nowhere else you need to be.</p><a className="start" href="#studio">enter soft space <span>↓</span></a></section>
     <section className="studio" id="studio">
       <div className="studio-copy"><p className="kicker">01 · touch</p><h2>Follow the shape as it softens.</h2><div className="count"><strong>0{shape+1}</strong><span>shape state<br/>in this moment</span></div></div>
       <div className={`orb-stage ${palettes[palette]}`}>
