@@ -38,6 +38,15 @@ function BubblePuzzle(){
   return <section className={`bubble-puzzle ${progress===total?"complete":""}`}><p className="kicker">small to big</p><h2>Let each bubble glow.</h2><div className="bubble-board">{Array.from({length:total},(_,i)=><button key={i} className={i<progress?"lit":""} style={{"--bubble":i} as React.CSSProperties} onClick={()=>touch(i)} aria-label={`Bubble ${i+1} of ${total}`}/>) }<div className="bubble-halo"/></div><p className="puzzle-status">{progress===total?"all glowing · tap the smallest to begin again":`${progress} of ${total}`}</p></section>
 }
 
+function MatchGame(){
+  const cards=[0,1,2,1,0,2],symbols=["●","✦","◌"],[open,setOpen]=useState<number[]>([]),[matched,setMatched]=useState<number[]>([]);
+  useEffect(()=>{if(open.length!==2)return;const timer=window.setTimeout(()=>{if(cards[open[0]]===cards[open[1]])setMatched(m=>[...m,...open]);setOpen([])},650);return()=>window.clearTimeout(timer)},[open]);
+  function choose(i:number){if(open.length===2||open.includes(i)||matched.includes(i))return;setOpen(o=>[...o,i])}
+  function reset(){setOpen([]);setMatched([])}
+  const complete=matched.length===cards.length;
+  return <section className={`match-game ${complete?"complete":""}`}><p className="kicker">find the soft pairs</p><h2>A little match.</h2><div className="match-board">{cards.map((pair,i)=>{const shown=open.includes(i)||matched.includes(i);return <button key={i} className={`${shown?"shown":""} ${matched.includes(i)?"matched":""}`} onClick={()=>choose(i)} aria-label={shown?`Card ${i+1}, ${symbols[pair]}`:`Hidden card ${i+1}`}><span>{symbols[pair]}</span></button>})}</div><button className="match-reset" onClick={reset}>{complete?"all matched · play again":"start over"}</button></section>
+}
+
 export default function Home(){
   const [shape,setShape]=useState(0),[palette,setPalette]=useState(0),[note,setNote]=useState(0),[noise,setNoise]=useState<NoiseName>("pink"),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(28),[dvdBurst,setDvdBurst]=useState(0),[dvdPalette,setDvdPalette]=useState(0),[dvdNote,setDvdNote]=useState(1),[constellationReverse,setConstellationReverse]=useState(false),[constellationPalette,setConstellationPalette]=useState(0),[constellationNote,setConstellationNote]=useState(2);
   const [orbHint,setOrbHint]=useState(true),[constellationHint,setConstellationHint]=useState(true),[dvdHint,setDvdHint]=useState(true);
@@ -79,6 +88,7 @@ export default function Home(){
     <section className="quote-sky" aria-label="Gentle reminders"><div className="wind-lines" aria-hidden="true"/><div className="quote-ring qr-one"><i/></div><div className="quote-ring qr-two"><i/></div><div className="quote-ring qr-three"/>{Array.from({length:9},(_,i)=><span className="tiny-orb" key={i} style={{"--o":i} as React.CSSProperties}/>) }<p className="kicker">let the words pass through</p>{quotes.map((quote,i)=><blockquote key={quote} style={{"--q":i} as React.CSSProperties}>{quote}</blockquote>)}</section>
     <GroundingPage variant="closing"/>
     <BubblePuzzle/>
+    <MatchGame/>
     <section className="conclusion" aria-label="A gentle conclusion"><div className="conclusion-rings" aria-hidden="true"><i/><i/><b/><b/></div><p className="kicker">a soft ending</p><h2>You made a little space.<br/><em>That is enough for now.</em></h2><p>Take what helped. Leave the rest.</p><a href="#top">begin again <span>↑</span></a></section>
     <footer><a className="wordmark" href="#top"><i/>soft space</a><p>made gently, for gentle moments</p><a href="#top">back to top ↑</a></footer>
   </main>
