@@ -13,11 +13,12 @@ function makeNoise(ctx:AudioContext,type:NoiseName){
   return buffer;
 }
 
-const questionSets={body:[{q:"Which color feels good right now?",options:["Pastel blue","Pastel yellow","Pastel green","Pastel pink","Pastel lilac"]},{q:"What temperature feels best?",options:["Cool","Warm","In between"]},{q:"What feels most supportive?",options:["Softness","Pressure","Space"]}],closing:[{q:"What is your favorite hydration drink?",options:["Water","Gatorade","Coconut Water"]},{q:"What is your go-to caffeine drink?",options:["Black Coffee","Red Bull","Iced Latte"]},{q:'What is your favorite "silly" / treat drink?',options:["Orange Juice","Diet Coke","Hot Chocolate"]}]};
+const questionSets={body:[{q:"Which color feels good right now?",options:["Pastel blue","Pastel yellow","Pastel green","Pastel pink","Pastel lilac"]},{q:"What temperature feels best?",options:["Cool","Warm","In between"]},{q:"What feels most supportive?",options:["Softness","Pressure","Space"]}],closing:[{q:"What is your favorite hydration drink?",options:["Water","Gatorade","Coconut Water"]},{q:"What is your go-to caffeine drink?",options:["Black Coffee","Red Bull","Iced Latte"]},{q:'What is your favorite "silly" / treat drink?',options:["Orange Juice","Diet Coke","Hot Chocolate"]}],fun:[{q:"Pick one tiny superpower.",options:["Pause time","Talk to animals","Instant cozy"]},{q:"What shape is your cloud?",options:["Bunny","Heart","Croissant"]},{q:"Choose a pocket-sized friend.",options:["Tiny frog","Sleepy cat","Little dragon"]}]};
 
 function GroundingPage({variant}:{variant:keyof typeof questionSets}){
   const [answers,setAnswers]=useState<Record<number,string>>({});
-  return <section className={`question-page question-${variant}`}><p className="kicker">{variant==="closing"?"before you go":"a small check in"}</p><div className="question-list">{questionSets[variant].map((item,i)=><article key={item.q} className={answers[i]?"answered":""}><span>0{i+1}</span><h3>{item.q}</h3><div className={`answer-row ${variant==="body"&&i===0?"pastel-row":""}`}>{item.options.map(option=><button key={option} aria-label={option} className={answers[i]===option?"selected":""} onClick={()=>setAnswers(a=>({...a,[i]:option}))}><span>{variant==="body"&&i===0?"":option}</span></button>)}</div></article>)}</div>{Object.keys(answers).length>0&&<div className="answer-bloom" key={Object.values(answers).join()} aria-hidden="true"/>}</section>
+  const kicker=variant==="closing"?"before you go":variant==="fun"?"just for fun":"a small check in";
+  return <section className={`question-page question-${variant}`}><p className="kicker">{kicker}</p><div className="question-list">{questionSets[variant].map((item,i)=><article key={item.q} className={answers[i]?"answered":""}><span>0{i+1}</span><h3>{item.q}</h3><div className={`answer-row ${variant==="body"&&i===0?"pastel-row":""}`}>{item.options.map(option=><button key={option} aria-label={option} className={answers[i]===option?"selected":""} onClick={()=>setAnswers(a=>({...a,[i]:option}))}><span>{variant==="body"&&i===0?"":option}</span></button>)}</div></article>)}</div>{Object.keys(answers).length>0&&<div className="answer-bloom" key={Object.values(answers).join()} aria-hidden="true"/>}</section>
 }
 
 function PuzzlePage(){
@@ -45,6 +46,17 @@ function MatchGame(){
   function reset(){setOpen([]);setMatched([])}
   const complete=matched.length===cards.length;
   return <section className={`match-game ${complete?"complete":""}`}><p className="kicker">find the soft pairs</p><h2>A little match.</h2><div className="match-board">{cards.map((pair,i)=>{const shown=open.includes(i)||matched.includes(i);return <button key={i} className={`${shown?"shown":""} ${matched.includes(i)?"matched":""}`} onClick={()=>choose(i)} aria-label={shown?`Card ${i+1}, ${symbols[pair]}`:`Hidden card ${i+1}`}><span>{symbols[pair]}</span></button>})}</div><button className="match-reset" onClick={reset}>{complete?"all matched · play again":"start over"}</button></section>
+}
+
+const factQuestions=[
+  {q:"How many hearts does an octopus have?",options:["One","Two","Three"],answer:"Three",fact:"Two move blood through the gills. One pumps it through the body."},
+  {q:"Which one is botanically a berry?",options:["Strawberry","Banana","Raspberry"],answer:"Banana",fact:"A banana grows from one flower with one ovary, so it counts as a berry."},
+  {q:"Which planet spins almost on its side?",options:["Mars","Saturn","Uranus"],answer:"Uranus",fact:"Uranus has an extreme tilt, so its seasons last for years."}
+];
+
+function FactQuiz(){
+  const [answers,setAnswers]=useState<Record<number,string>>({});
+  return <section className="fact-quiz"><p className="kicker">did you know?</p><h2>Three tiny surprises.</h2><div className="fact-list">{factQuestions.map((item,i)=><article key={item.q} className={answers[i]?"revealed":""}><span>0{i+1}</span><h3>{item.q}</h3><div className="fact-options">{item.options.map(option=><button key={option} className={`${answers[i]===option?"picked":""} ${answers[i]&&option===item.answer?"correct":""}`} onClick={()=>setAnswers(a=>({...a,[i]:option}))}>{option}</button>)}</div>{answers[i]&&<p key={answers[i]}><b>{answers[i]===item.answer?"Yes!":"Surprise!"}</b> {item.fact}</p>}</article>)}</div></section>
 }
 
 export default function Home(){
@@ -88,6 +100,8 @@ export default function Home(){
     <section className="quote-sky" aria-label="Gentle reminders"><div className="wind-lines" aria-hidden="true"/><div className="quote-ring qr-one"><i/></div><div className="quote-ring qr-two"><i/></div><div className="quote-ring qr-three"/>{Array.from({length:9},(_,i)=><span className="tiny-orb" key={i} style={{"--o":i} as React.CSSProperties}/>) }<p className="kicker">let the words pass through</p>{quotes.map((quote,i)=><blockquote key={quote} style={{"--q":i} as React.CSSProperties}>{quote}</blockquote>)}</section>
     <GroundingPage variant="closing"/>
     <BubblePuzzle/>
+    <GroundingPage variant="fun"/>
+    <FactQuiz/>
     <MatchGame/>
     <section className="conclusion" aria-label="A gentle conclusion"><div className="conclusion-rings" aria-hidden="true"><i/><i/><b/><b/></div><p className="kicker">a soft ending</p><h2>You made a little space.<br/><em>That is enough for now.</em></h2><p>Take what helped. Leave the rest.</p><a href="#top">begin again <span>↑</span></a></section>
     <footer><a className="wordmark" href="#top"><i/>soft space</a><p>made gently, for gentle moments</p><a href="#top">back to top ↑</a></footer>
