@@ -5,7 +5,7 @@ type NoiseName = "binaural" | "pink" | "brown" | "white" | "rain";
 const noiseLabels:Record<NoiseName,string>={binaural:"Binaural focus · 10 Hz",pink:"Pink noise",brown:"Brown noise",white:"White noise",rain:"Soft rain"};
 const notes=["Let your shoulders soften.","You only need to be here now.","Nothing is asking you to hurry.","Your softness is a kind of strength.","One slow breath is enough.","Make a little room for ease."];
 const palettes=["rose","blush","berry","peach","lilac"];
-const quotes=["You don’t have to process everything right now.","The world is too loud right now, but you don't have to match its volume.","It is completely okay to turn the lights off and stop performing.","You are not overreacting; your nervous system is simply full.","You don’t need to explain why this hurts. Just rest.","You don’t need to find a solution right now; just let the noise settle.","It is entirely safe to unplug and let the world wait outside.","You don’t have to push through; your body is allowed to stop.","There is no right way to feel safe, as long as it brings you peace.","Step back from the demands; you don’t owe anyone your energy today."];
+const quotes=["You don’t have to process everything right now.","The world is too loud right now, but you don't have to match its volume.","It is completely okay to turn the lights off and stop performing.","You are not overreacting; your nervous system is simply full.","You don’t need to find a solution right now; just let the noise settle.","You don’t have to push through; your body is allowed to stop."];
 
 function makeNoise(ctx:AudioContext,type:NoiseName){
   const seconds=3,buffer=ctx.createBuffer(2,ctx.sampleRate*seconds,ctx.sampleRate);
