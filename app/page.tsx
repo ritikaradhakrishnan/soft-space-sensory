@@ -59,6 +59,18 @@ function FactQuiz(){
   return <section className="fact-quiz"><p className="kicker">did you know?</p><h2>Three tiny surprises.</h2><div className="fact-list">{factQuestions.map((item,i)=><article key={item.q} className={answers[i]?"revealed":""}><span>0{i+1}</span><h3>{item.q}</h3><div className="fact-options">{item.options.map(option=><button key={option} className={`${answers[i]===option?"picked":""} ${answers[i]&&option===item.answer?"correct":""}`} onClick={()=>setAnswers(a=>({...a,[i]:option}))}>{option}</button>)}</div>{answers[i]&&<p key={answers[i]}><b>{answers[i]===item.answer?"Yes!":"Surprise!"}</b> {item.fact}</p>}</article>)}</div></section>
 }
 
+function SandGarden(){
+  const [marks,setMarks]=useState<{x:number;y:number;id:number}[]>([]);
+  function leaveMark(e:React.PointerEvent<HTMLDivElement>){const r=e.currentTarget.getBoundingClientRect(),mark={x:(e.clientX-r.left)/r.width*100,y:(e.clientY-r.top)/r.height*100,id:performance.now()+Math.random()};setMarks(m=>[...m.slice(-159),mark])}
+  return <section className="sand-page"><div className="sand-heading"><p className="kicker">digital sand garden</p><h2>Draw something slow.</h2><button onClick={()=>setMarks([])}>smooth the sand</button></div><div className="sand-bed" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);leaveMark(e)}} onPointerMove={e=>{if(e.buttons)leaveMark(e)}} aria-label="Drag through the pink sand to make a pattern">{marks.map((mark,i)=><i key={mark.id} style={{left:`${mark.x}%`,top:`${mark.y}%`,"--grain":i} as React.CSSProperties}/>)}</div></section>
+}
+
+function ConstellationGarden(){
+  const [stars,setStars]=useState<{x:number;y:number}[]>([]);
+  function place(e:React.PointerEvent<HTMLDivElement>){if((e.target as HTMLElement).closest("button"))return;const r=e.currentTarget.getBoundingClientRect(),star={x:(e.clientX-r.left)/r.width*100,y:(e.clientY-r.top)/r.height*100};setStars(s=>s.length>=18?[star]:[...s,star])}
+  return <section className="star-garden" onPointerDown={place} aria-label="Tap the sky to make a constellation"><div className="star-heading"><p className="kicker">make a constellation</p><h2>Place a little light.</h2><button onClick={()=>setStars([])}>clear the sky</button></div><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{stars.slice(1).map((star,i)=><line key={i} x1={stars[i].x} y1={stars[i].y} x2={star.x} y2={star.y}/>)}</svg>{stars.map((star,i)=><i className="made-star" key={`${star.x}-${star.y}-${i}`} style={{left:`${star.x}%`,top:`${star.y}%`,"--star":i} as React.CSSProperties}/>)}</section>
+}
+
 export default function Home(){
   const [shape,setShape]=useState(0),[palette,setPalette]=useState(0),[note,setNote]=useState(0),[noise,setNoise]=useState<NoiseName>("pink"),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(28),[dvdBurst,setDvdBurst]=useState(0),[dvdPalette,setDvdPalette]=useState(0),[dvdNote,setDvdNote]=useState(1),[constellationReverse,setConstellationReverse]=useState(false),[constellationPalette,setConstellationPalette]=useState(0),[constellationNote,setConstellationNote]=useState(2);
   const [orbHint,setOrbHint]=useState(true),[constellationHint,setConstellationHint]=useState(true),[dvdHint,setDvdHint]=useState(true);
@@ -98,6 +110,8 @@ export default function Home(){
     <section className={`dvd-world ${palettes[dvdPalette]} hit-${dvdBurst%2}`} aria-label="Bouncing pink orb sensory animation"><button className="dvd-stage" onClick={bounceReaction} aria-label="React to the bouncing orb, change its color, and show a new affirmation"><span className="dvd-x"><span className="dvd-y"><span className="dvd-local-ring dlr-one"><i/></span><span className="dvd-local-ring dlr-two"><i/></span><span className="dvd-local-ring dlr-three"/><span className="dvd-orb"><i/><b/></span>{dvdHint&&<span className="tap-cue tap-cue-three" aria-hidden="true">tap!</span>}</span></span><span className="impact" key={`impact-${dvdBurst}`}>{Array.from({length:12},(_,i)=><i key={i} style={{"--p":i} as React.CSSProperties}/>)}</span><span className="screen-ring sr-one"/><span className="screen-ring sr-two"/></button><p className="sensory-note dvd-note" key={dvdNote}>{notes[dvdNote]}</p></section>
     <BloomPuzzle/>
     <section className="quote-sky" aria-label="Gentle reminders"><div className="wind-lines" aria-hidden="true"/><div className="quote-ring qr-one"><i/></div><div className="quote-ring qr-two"><i/></div><div className="quote-ring qr-three"/>{Array.from({length:9},(_,i)=><span className="tiny-orb" key={i} style={{"--o":i} as React.CSSProperties}/>) }<p className="kicker">let the words pass through</p>{quotes.map((quote,i)=><blockquote key={quote} style={{"--q":i} as React.CSSProperties}>{quote}</blockquote>)}</section>
+    <SandGarden/>
+    <ConstellationGarden/>
     <GroundingPage variant="closing"/>
     <BubblePuzzle/>
     <GroundingPage variant="fun"/>
