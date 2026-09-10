@@ -1,14 +1,14 @@
 # Soft Space
 
-A calm, interactive sensory website built around touch, sound, and breath.
+A calm & interactive sensory website built around touch, sound and breath.
 
 ## Features
 
-- A glossy pink form that splits into up to seven independently moving orbs
-- A shifting palette of rose, blush, berry, peach, and lilac
-- Pink, brown, and white noise plus a soft-rain soundscape
-- Volume control, calming prompts, a tiny grounding ritual, and reduced-motion support
-- Responsive design for desktop, mobile, and Notion embeds
+- orbs that change shape on tap
+- grounding questions
+- Pink, brown and white noise & binaural beats for adhd focus
+- small grounding rituals
+- responsive design for desktop, mobile, and notion embeds
 
 ## Run locally
 
@@ -28,3 +28,6 @@ npm run build
 ## Live site
 
 [ritikaradhakrishnan.github.io/soft-space-sensory](https://ritikaradhakrishnan.github.io/soft-space-sensory/)
+
+
+I hope this helps atleast one person out there in a world full of chaos. :)
